@@ -122,7 +122,7 @@ public class ProdutoDAO extends DAO {
 		boolean status = false;
 		try {  
 			Statement st = conexao.createStatement();
-			String sql = "UPDATE estoque SET nome = '" + produto.getCod() + "', valor = '"  
+			String sql = "UPDATE estoque SET nome = '" + produto.getNome() + "', valor = '"  
 				       + produto.getValor() + "', quantidade = '" + produto.getQuantidade() + "'"
 					   + " WHERE cod = " + produto.getCod();
 			System.out.println(sql);
