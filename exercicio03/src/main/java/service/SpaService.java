@@ -25,7 +25,7 @@ public class SpaService {
 	}
 
 	public void makeForm() {
-		makeForm(FORM_INSERT, new Spa(), FORM_ORDERBY_SERVICO);
+		makeForm(FORM_INSERT, new Spa(), FORM_ORDERBY_ID);
 	}
 
 	
@@ -46,14 +46,15 @@ public class SpaService {
 		}  catch (Exception e) { System.out.println(e.getMessage()); }
 		
 		String umServico = "";
+		/*String novoServico = "";
 		if(tipo != FORM_INSERT) {
-			umServico += "\t<table width=\"80%\" bgcolor=\"#f3f3f3\" align=\"center\">";
-			umServico += "\t\t<tr>";
-			umServico += "\t\t\t<td align=\"left\"><font size=\"+2\"><b>&nbsp;&nbsp;&nbsp;<a href=\"/spa/list/1\">Novo Serviço</a></b></font></td>";
-			umServico += "\t\t</tr>";
-			umServico += "\t</table>";
-			umServico += "\t<br>";			
-		}
+			novoServico += "<font size=\"+1.5\"><b>&nbsp;&nbsp;&nbsp;<a href=\"/spa/list/1\" id=\"addServico\"> Novo serviço"; 
+			novoServico += "<i class=\"fa-regular fa-square-plus\"></i></a></b></font>";
+
+			form = form.replaceFirst("<NOVO-SERVICO>", novoServico);		
+		}*/
+		
+		
 		
 		if(tipo == FORM_INSERT || tipo == FORM_UPDATE) {
 			String action = "/spa/";
@@ -61,7 +62,7 @@ public class SpaService {
 			if (tipo == FORM_INSERT){
 				action += "insert";
 				name = "Inserir Serviço";
-				servico = "massagem, ...";
+				servico = "massagem";
 				buttonLabel = "Inserir";
 			} else {
 				action += "update/" + spa.getId();
@@ -78,14 +79,10 @@ public class SpaService {
 			umServico += "\t\t\t<td colspan=\"3\" align=\"left\">&nbsp;</td>";
 			umServico += "\t\t</tr>";
 			umServico += "\t\t<tr>";
-			umServico += "\t\t\t<td>&nbsp;Descrição: <input class=\"input--register\" type=\"text\" name=\"servico\" value=\""+ servico +"\"></td>";
-			umServico += "\t\t\t<td>Preco: <input class=\"input--register\" type=\"text\" name=\"preco\" value=\""+ spa.getPreco() +"\"></td>";
+			umServico += "\t\t\t<td>&nbsp;Serviço: <input class=\"input--register\" type=\"text\" name=\"servico\" value=\""+ servico +"\"></td>";
+			umServico += "\t\t\t<td>Preço: <input class=\"input--register\" type=\"text\" name=\"preco\" value=\""+ spa.getPreco() +"\"></td>";
 			umServico += "\t\t\t<td>Duração: <input class=\"input--register\" type=\"text\" name=\"duracao\" value=\""+ spa.getDuracao() +"\"></td>";
-			umServico += "\t\t</tr>";
-			umServico += "\t\t<tr>";
-			//umServico += "\t\t\t<td>&nbsp;Data de fabricação: <input class=\"input--register\" type=\"text\" name=\"dataFabricacao\" value=\""+ produto.getDataFabricacao().toString() + "\"></td>";
-			//umServico += "\t\t\t<td>Data de validade: <input class=\"input--register\" type=\"text\" name=\"dataValidade\" value=\""+ produto.getDataValidade().toString() + "\"></td>";
-			umServico += "\t\t\t<td align=\"center\"><input type=\"submit\" value=\""+ buttonLabel +"\" class=\"input--main__style input--button\"></td>";
+			umServico += "\t\t\t<td align=\"center\"><input type=\"submit\" value=\""+ buttonLabel +"\" class=\"input--main__style input--button\" id=\"botaoPrinc\"></td>";
 			umServico += "\t\t</tr>";
 			umServico += "\t</table>";
 			umServico += "\t</form>";		
@@ -99,10 +96,10 @@ public class SpaService {
 			umServico += "\t\t</tr>";
 			umServico += "\t\t<tr>";
 			umServico += "\t\t\t<td>&nbsp;Serviço: "+ spa.getServico() +"</td>";
-			umServico += "\t\t\t<td>Preco: "+ spa.getPreco() +"</td>";
-			umServico += "\t\t\t<td>Duração: "+ spa.getDuracao() +"</td>";
+			umServico += "\t\t\t<td>Preço: "+ spa.getPreco() +"</td>";
+			umServico += "\t\t\t<td>Duração: "+ spa.getDuracao() + " minutos</td>";
 			umServico += "\t\t</tr>";
-			//umServico += "\t\t<tr>";
+			umServico += "\t\t<tr>";
 			//umServico += "\t\t\t<td>&nbsp;Data de fabricação: "+ produto.getDataFabricacao().toString() + "</td>";
 			//umServico += "\t\t\t<td>Data de validade: "+ produto.getDataValidade().toString() + "</td>";
 			umServico += "\t\t\t<td>&nbsp;</td>";
@@ -113,8 +110,10 @@ public class SpaService {
 		}
 		form = form.replaceFirst("<UM-SERVICO>", umServico);
 		
-		String list = new String("<table width=\"80%\" align=\"center\" bgcolor=\"#f3f3f3\">");
-		list += "\n<tr><td colspan=\"6\" align=\"left\"><font size=\"+2\"><b>&nbsp;&nbsp;&nbsp;Relação de Serviços</b></font></td></tr>\n" +
+		String list = new String("<table width=\"80%\" align=\"center\" bgcolor=\"#f3f3f3\" id=\"tableListar\">");
+		list += "\n<tr><td colspan=\"6\" align=\"left\"><font size=\"+2\"><b>&nbsp;&nbsp;&nbsp;Relação de Serviços</b></font>" +
+				"<font size=\\\"+1.5\\\"><b>&nbsp;&nbsp;&nbsp;<a href=\\\"/spa/list/1\\\" id=\\\"addServico\\\"> Novo serviço "
+				+ "<i class=\\\"fa-regular fa-square-plus\\\"></i></a></b></font> </td></tr>\n" +
 				"\n<tr><td colspan=\"6\">&nbsp;</td></tr>\n" +
     			"\n<tr>\n" + 
         		"\t<td><a href=\"/spa/list/" + FORM_ORDERBY_ID + "\"><b>ID</b></a></td>\n" +
@@ -136,13 +135,13 @@ public class SpaService {
 		String bgcolor = "";
 		for (Spa s : servicos) {
 			bgcolor = (i++ % 2 == 0) ? "#fff5dd" : "#dddddd";
-			list += "\n<tr bgcolor=\""+ bgcolor +"\">\n" + 
+			list += "\n<tr class=\"listagem\" bgcolor=\""+ bgcolor +"\">\n" + 
             		  "\t<td>" + s.getId() + "</td>\n" +
             		  "\t<td>" + s.getServico() + "</td>\n" +
             		  "\t<td>" + s.getPreco() + "</td>\n" +
-            		  "\t<td align=\"center\" valign=\"middle\"><a href=\"/spa/" + s.getId() + "\"><img src=\"/image/detail.png\" width=\"20\" height=\"20\"/></a></td>\n" +
-            		  "\t<td align=\"center\" valign=\"middle\"><a href=\"/spa/update/" + s.getId() + "\"><img src=\"/image/update.png\" width=\"20\" height=\"20\"/></a></td>\n" +
-            		  "\t<td align=\"center\" valign=\"middle\"><a href=\"javascript:confirmarDeleteServico('" + s.getId() + "', '" + s.getServico() + "', '" + s.getPreco() + "');\"><img src=\"/image/delete.png\" width=\"20\" height=\"20\"/></a></td>\n" +
+            		  "\t<td align=\"center\" valign=\"middle\"><a href=\"/spa/" + s.getId() + "\"><i class=\"fa-solid fa-magnifying-glass-plus\"></i></a></td>\n" +
+            		  "\t<td align=\"center\" valign=\"middle\"><a href=\"/spa/update/" + s.getId() + "\"><i class=\"fa-solid fa-pen-to-square\"></i></a></td>\n" +
+            		  "\t<td align=\"center\" valign=\"middle\"><a href=\"javascript:confirmarDeleteServico('" + s.getId() + "', '" + s.getServico() + "', '" + s.getPreco() + "');\"><i class=\"fa-solid fa-trash\"></i></a></td>\n" +
             		  "</tr>\n";
 		}
 		list += "</table>";		
@@ -176,7 +175,7 @@ public class SpaService {
 	
 	public Object get(Request request, Response response) {
 		int id = Integer.parseInt(request.params(":id"));		
-		Spa spa= (Spa) spaDAO.get(id);
+		Spa spa = (Spa) spaDAO.get(id);
 		
 		if (spa != null) {
 			response.status(200); // success

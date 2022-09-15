@@ -1,7 +1,7 @@
 package model;
 
 public class Spa {
-	private int id;
+	private int id = 1;
 	private String servico;
 	private int duracao;
 	private float preco;

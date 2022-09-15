@@ -13,6 +13,7 @@ import java.util.List;
 
 
 public class SpaDAO extends DAO {
+	private int lastId = 0;
 
 	public SpaDAO() {
 		super();
@@ -26,8 +27,9 @@ public class SpaDAO extends DAO {
 	public boolean insert(Spa servico) {
 		boolean status = false;
 		try {
+			lastId++;
 			String sql = "INSERT INTO spa (id, servico, preco, duracao) "
-		               + "VALUES (12, '" + servico.getServico() + "', "
+		               + "VALUES (" + lastId + ", '" + servico.getServico() + "', "
 		               + servico.getPreco() + ", " + servico.getDuracao() + ");";
 			PreparedStatement st = conexao.prepareStatement(sql);
 //		    st.setTimestamp(1, Timestamp.valueOf(produto.getDataFabricacao()));
@@ -128,7 +130,8 @@ public class SpaDAO extends DAO {
 			st.executeUpdate("DELETE FROM spa WHERE id = " + id);
 			st.close();
 			status = true;
-		} catch (SQLException u) {  
+		} catch (SQLException u) {
+			System.out.println("Falha no delete");
 			throw new RuntimeException(u);
 		}
 		return status;
